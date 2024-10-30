@@ -22,6 +22,8 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
+
+        System.out.println("new user connected ! -> " + session.getId());
         // Assign a unique connection ID to the user
         String connectionId = session.getId();
         sessions.put(connectionId, session);
@@ -38,6 +40,7 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
 
     @Override
     protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
+        System.out.println("new message received by user=" + session.getId() + " :::::: " + message.getPayload() );
         // Parse the incoming JSON message
         Map<String, String> payload = objectMapper.readValue(message.getPayload(), Map.class);
         String recipientId = payload.get("recipientId");
@@ -63,6 +66,9 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
 
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
+        System.out.println("User disconnected ! -> " + session.getId());
+
+
         // Remove the user from sessions and notify others
         String connectionId = session.getId();
         sessions.remove(connectionId);
